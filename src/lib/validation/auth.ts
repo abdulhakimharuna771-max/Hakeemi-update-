@@ -133,3 +133,32 @@ export function describeAuthError(message: string): string {
 
   return message;
 }
+
+/**
+ * Messages shown when an emailed link fails.
+ *
+ * Supabase's own wording is written for developers ("PKCE code verifier not
+ * found in storage…"). An applicant needs to know what to do next, so the
+ * common cases are translated and anything unrecognised gets a neutral, honest
+ * fallback rather than a raw technical string on the login screen.
+ */
+export function describeEmailLinkError(message: string): string {
+  const normalised = message.toLowerCase();
+
+  if (normalised.includes('pkce') || normalised.includes('code verifier')) {
+    return 'This link was opened in a different browser or device from the one used to request it. Sign in with your password, or request a new link.';
+  }
+  if (
+    normalised.includes('expired') ||
+    normalised.includes('invalid') ||
+    normalised.includes('not found') ||
+    normalised.includes('already been used')
+  ) {
+    return 'This link has expired or has already been used. Request a new one and open it in the same browser you signed up in.';
+  }
+  if (normalised.includes('rate limit') || normalised.includes('too many requests')) {
+    return 'Too many attempts. Please wait a few minutes before trying again.';
+  }
+
+  return 'That link could not be used. Sign in, or request a new one.';
+}

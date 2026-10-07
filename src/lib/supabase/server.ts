@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { SUPABASE_ANON_KEY, SUPABASE_URL, assertSupabaseConfigured } from './config';
+import { SUPABASE_ANON_KEY, SUPABASE_URL, assertSupabaseConfigured, supabaseFetch } from './config';
 
 /**
  * Server Supabase client, bound to the request's cookies.
@@ -17,6 +17,8 @@ export async function getServerSupabase(): Promise<SupabaseClient> {
   const cookieStore = await cookies();
 
   return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    // A slow or unreachable project fails fast rather than stalling the render.
+    global: { fetch: supabaseFetch },
     cookies: {
       getAll() {
         return cookieStore.getAll();

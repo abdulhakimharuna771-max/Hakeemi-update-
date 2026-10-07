@@ -36,7 +36,9 @@ npm run dev
 
 The database has to exist first — see **[SETUP.md](./SETUP.md)** for the full
 walkthrough (migrations, seeds, auth email templates, and the Phase 1 acceptance
-checklist).
+checklist), and **[VERIFICATION.md](./VERIFICATION.md)** for the manual
+verification run covering every acceptance item, including cross-applicant
+isolation.
 
 Without environment variables the site still runs: it renders every page with an
 explicit "not configured yet" notice instead of crashing or faking data.
@@ -52,6 +54,7 @@ explicit "not configured yet" notice instead of crashing or faking data.
 | `npm run lint` | ESLint (Next.js config) |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run db:verify` | applies every migration and seed to an in-process Postgres and proves the RPCs, RLS policies, ID generator and storage rules — 146 checks, no credentials needed |
+| `npm run check:routes` | route smoke test against a running server — statuses, redirects, landing content (21 checks) |
 | `npm run check:a11y` | accessibility sanity check of the public routes against a running server |
 | `npm run db:seed:locations` | regenerates the Nigerian geography seed |
 

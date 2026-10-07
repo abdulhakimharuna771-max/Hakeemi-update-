@@ -30,6 +30,8 @@ const MIGRATIONS = [
   'supabase/migrations/0005_rls.sql',
   'supabase/migrations/0006_storage.sql',
   'supabase/migrations/0007_contact_messages.sql',
+  'supabase/migrations/0008_resubmission_keeps_application_number.sql',
+  'supabase/migrations/0009_application_number_alphabet.sql',
 ];
 
 const SEEDS = [
@@ -666,8 +668,11 @@ async function main() {
   check('application number has the GKO-YYYY-XXXXXX format',
     /^GKO-\d{4}-[A-Z0-9]{6}$/.test(submitted?.application_number ?? ''),
     `got ${submitted?.application_number}`);
-  check('application number avoids ambiguous characters (0/1/I/L/O)',
-    !/[01ILO]/.test((submitted?.application_number ?? '').slice(9)),
+  // The generator's 32-symbol alphabet omits 1, I, L and O — the characters
+  // most often mis-transcribed from a printed reference. A zero is allowed
+  // because no capital O can appear. The slice(9) skips the fixed "GKO-YYYY-".
+  check('application number avoids look-alike characters (1/I/L/O)',
+    !/[1ILO]/.test((submitted?.application_number ?? '').slice(9)),
     `got ${submitted?.application_number}`);
   check('submitted_at is stamped', Boolean(submitted?.submitted_at));
   check('terms_accepted_at is stamped', Boolean(submitted?.terms_accepted_at));
@@ -978,6 +983,75 @@ async function main() {
     1
   );
 
+  // --- A returned application ---------------------------------------------
+  //
+  // MORE_INFORMATION_REQUIRED is the only state in which a submitted
+  // application becomes editable again. The applicant must be able to answer,
+  // and their application number must survive the round trip.
+  section('Returned applications');
+
+  await actAs(db, 'authenticated', userB);
+  await db.query(
+    `update public.applications
+        set status = 'MORE_INFORMATION_REQUIRED',
+            review_notes = 'Please attach your project write-up.'
+      where id = '${draft1.id}'`
+  );
+
+  await actAs(db, 'authenticated', userA);
+  const returnedChecklist = (
+    await db.query(`select public.get_application_checklist('${draft1.id}') as app`)
+  ).rows[0].app;
+  check('a returned application is editable again', returnedChecklist.is_editable === true);
+
+  checkEqual(
+    'the applicant can read what the reviewer asked for',
+    (await db.query(`select review_notes from public.applications where id = '${draft1.id}'`)).rows[0]
+      .review_notes,
+    'Please attach your project write-up.'
+  );
+
+  const editWhileReturned = await db.query(
+    `select public.save_application_draft('${JSON.stringify({
+      project_description:
+        'A cooperative milling and packaging service for smallholder cassava farmers in Akinyele, with shared equipment and an off-take agreement.',
+      current_step: 7,
+    })}'::jsonb, null) as app`
+  );
+  check('an applicant can save changes while it is returned', Boolean(editWhileReturned.rows[0].app?.id));
+
+  const numberBeforeResubmit = (
+    await db.query(`select application_number from public.applications where id = '${draft1.id}'`)
+  ).rows[0].application_number;
+
+  const resubmitted = (await db.query(`select public.submit_application('${draft1.id}') as app`)).rows[0].app;
+
+  checkEqual('resubmission succeeds', resubmitted?.status, 'SUBMITTED');
+  checkEqual(
+    'resubmission keeps the same application number',
+    resubmitted?.application_number,
+    numberBeforeResubmit
+  );
+  // Four entries are visible to the applicant: DRAFT→SUBMITTED,
+  // SUBMITTED→UNDER_REVIEW, UNDER_REVIEW→MORE_INFORMATION_REQUIRED and the
+  // resubmission itself. The reviewer-only entry is hidden by RLS.
+  checkEqual(
+    'a resubmission is recorded in history',
+    await count(
+      db,
+      `select count(*) from public.application_status_history where application_id = '${draft1.id}'`
+    ),
+    4
+  );
+  checkEqual(
+    'the reviewer notes are kept for the record',
+    await count(
+      db,
+      `select count(*) from public.applications where id = '${draft1.id}' and review_notes is not null`
+    ),
+    1
+  );
+
   // --- Application number distribution -----------------------------------
   section('Application ID space');
   await asSystem(db);
@@ -988,9 +1062,12 @@ async function main() {
   check('all generated numbers match the public format',
     sample.every((n) => /^GKO-\d{4}-[A-Z0-9]{6}$/.test(n)),
     `examples: ${sample.filter((n) => !/^GKO-\d{4}-[A-Z0-9]{6}$/.test(n)).slice(0, 3).join(', ')}`);
-  check('generated numbers never contain ambiguous characters',
-    sample.every((n) => !/[01IO]/.test(n.slice(9))),
-    `examples: ${sample.filter((n) => /[01IO]/.test(n.slice(9))).slice(0, 3).join(', ')}`);
+  check('generated numbers never contain 1, I, L or O',
+    sample.every((n) => !/[1ILO]/.test(n.slice(9))),
+    `examples: ${sample.filter((n) => /[1ILO]/.test(n.slice(9))).slice(0, 3).join(', ')}`);
+  check('generated numbers use a wide alphabet (not a small subset)',
+    new Set(sample.join('').slice(0).split('')).size >= 20,
+    `distinct characters seen: ${new Set(sample.map((n) => n.slice(9)).join('')).size}`);
   const lastChars = sample.map((n) => n.slice(-1));
   check('generated numbers are not sequential',
     new Set(lastChars).size > 3,

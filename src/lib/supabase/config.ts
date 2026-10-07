@@ -30,3 +30,19 @@ export function assertSupabaseConfigured(): void {
     throw new SupabaseNotConfiguredError();
   }
 }
+
+/**
+ * Every request to Supabase is bounded.
+ *
+ * A paused project, an expired quota or a DNS failure otherwise leaves the
+ * visitor watching a blank page while the SDK retries. Failing after ten
+ * seconds lets the read layer return its empty state and the page render with
+ * an honest "not published yet" message instead.
+ *
+ * Server-to-Supabase calls sit in a datacentre, so ten seconds is generous; a
+ * caller-supplied signal always wins.
+ */
+export const SUPABASE_REQUEST_TIMEOUT_MS = 10_000;
+
+export const supabaseFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, signal: init?.signal ?? AbortSignal.timeout(SUPABASE_REQUEST_TIMEOUT_MS) });

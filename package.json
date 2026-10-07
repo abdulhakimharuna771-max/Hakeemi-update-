@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "db:seed:locations": "node scripts/build-location-seed.mjs",
     "db:verify": "node scripts/verify-database.mjs",
-    "check:a11y": "node scripts/check-accessibility.mjs"
+    "check:a11y": "node scripts/check-accessibility.mjs",
+    "check:routes": "node scripts/check-routes.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

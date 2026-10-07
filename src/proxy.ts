@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured } from '@/lib/supabase/config';
+import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured, supabaseFetch } from '@/lib/supabase/config';
+import { redirectTo } from '@/lib/http';
 
 /**
  * Next.js 16 Proxy (previously middleware).
@@ -21,6 +22,8 @@ export async function proxy(request: NextRequest) {
   if (!isSupabaseConfigured()) return response;
 
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    // Bounded, so an unreachable project cannot hold up every navigation.
+    global: { fetch: supabaseFetch },
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -48,13 +51,12 @@ export async function proxy(request: NextRequest) {
   const requiresSession = pathname.startsWith('/portal') || pathname === '/track' || pathname.startsWith('/track/');
 
   if (!user && requiresSession) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('next', `${pathname}${search}`);
-    return NextResponse.redirect(loginUrl);
+    const next = encodeURIComponent(`${pathname}${search}`);
+    return redirectTo(request, `/login?next=${next}`);
   }
 
   if (user && (pathname === '/login' || pathname === '/register')) {
-    return NextResponse.redirect(new URL('/portal/dashboard', request.url));
+    return redirectTo(request, '/portal/dashboard');
   }
 
   return response;

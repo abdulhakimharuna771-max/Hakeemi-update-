@@ -1,8 +1,10 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest } from 'next/server';
 import type { EmailOtpType } from '@supabase/supabase-js';
 
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
+import { describeEmailLinkError } from '@/lib/validation/auth';
+import { redirectTo } from '@/lib/http';
 
 /**
  * Handles every link Supabase Auth sends by email.
@@ -15,7 +17,7 @@ import { isSupabaseConfigured } from '@/lib/supabase/config';
  * cannot bounce an applicant to an external site.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
 
   const tokenHash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType | null;
@@ -29,8 +31,9 @@ export async function GET(request: NextRequest) {
       ? nextParam
       : '/portal/dashboard';
 
+  // Every failure lands on the login screen with an applicant-readable reason.
   const failure = (reason: string) =>
-    NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(reason)}`, origin));
+    redirectTo(request, `/login?error=${encodeURIComponent(describeEmailLinkError(reason))}`);
 
   if (providerError) {
     return failure(providerErrorDescription ?? providerError);
@@ -52,7 +55,7 @@ export async function GET(request: NextRequest) {
       console.error('auth confirm (otp) failed:', error.message);
       return failure(error.message);
     }
-    return NextResponse.redirect(new URL(next, origin));
+    return redirectTo(request, next);
   }
 
   if (code) {
@@ -61,7 +64,7 @@ export async function GET(request: NextRequest) {
       console.error('auth confirm (code) failed:', error.message);
       return failure(error.message);
     }
-    return NextResponse.redirect(new URL(next, origin));
+    return redirectTo(request, next);
   }
 
   return failure('invalid_link');

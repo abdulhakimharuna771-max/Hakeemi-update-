@@ -7,6 +7,7 @@ import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
 import { fieldErrorsFrom } from '@/lib/validation/errors';
 import type { AuthFormState } from '@/lib/forms';
+import { publicOrigin } from '@/lib/http';
 import {
   describeAuthError,
   forgotPasswordSchema,
@@ -21,10 +22,9 @@ async function resolveOrigin(): Promise<string> {
   const configured = (process.env.NEXT_PUBLIC_SITE_URL ?? '').trim();
   if (configured) return configured.replace(/\/+$/, '');
 
-  const headerList = await headers();
-  const host = headerList.get('x-forwarded-host') ?? headerList.get('host') ?? 'localhost:3000';
-  const proto = headerList.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https');
-  return `${proto}://${host}`;
+  // publicOrigin() ignores a bind address such as 0.0.0.0, so a confirmation
+  // link can never be emitted with a host the applicant cannot open.
+  return publicOrigin(await headers());
 }
 
 /** Only allow internal, absolute-path redirects — never an open redirect. */

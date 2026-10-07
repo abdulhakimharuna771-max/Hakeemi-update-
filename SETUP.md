@@ -43,6 +43,8 @@ supabase/migrations/0004_logic.sql
 supabase/migrations/0005_rls.sql
 supabase/migrations/0006_storage.sql
 supabase/migrations/0007_contact_messages.sql
+supabase/migrations/0008_resubmission_keeps_application_number.sql
+supabase/migrations/0009_application_number_alphabet.sql
 
 supabase/seed/001_reference_data.sql
 supabase/seed/002_locations_nigeria.sql
@@ -71,7 +73,7 @@ policies:
 node scripts/verify-database.mjs
 ```
 
-Expected output ends with `146/146 checks passed`. It needs no project
+Expected output ends with `158/158 checks passed`. It needs no project
 credentials and writes nothing anywhere.
 
 ---
@@ -188,10 +190,31 @@ programme brief.
 the year is the intake year. The generator uses the year the application is
 submitted (`GKO-<submission year>-<6 characters>`), so an intake that opens in
 December 2025 and is submitted in January 2026 reads `GKO-2026-…`. The six
-characters come from exactly 32 unambiguous symbols (`23456789ABCDEFGHJKLMNPQRSTUVWXYZ`)
+characters come from exactly 32 symbols (`023456789ABCDEFGHJKMNPQRSTUVWXYZ` —
+1, I, L and O are never generated, so a reference is hard to mis-transcribe)
 drawn from `gen_random_uuid()`, giving 32⁶ = 1,073,741,824 combinations with no
-modulo bias and no sequential ordering. Duplicates are impossible to hand-craft
-and are retried internally if one ever collided.
+modulo bias and no sequential ordering. A collision is retried internally, and
+`generate_application_number()` refuses to run if a future edit changes the
+alphabet away from 32 unique characters.
+
+**Note on resubmission.** When an application comes back through
+*More Information Required*, the applicant can edit it again and resubmit — and
+it keeps the same application number, so the reference they were given stays
+valid.
+
+### Automated checks
+
+The manual, step-by-step acceptance run — including the cross-applicant
+isolation checks — is in **[VERIFICATION.md](./VERIFICATION.md)**.
+
+With the dev server running:
+
+```bash
+npm run check:routes    # every route answers correctly (21 checks)
+npm run check:a11y      # labels, headings, landmarks on the public routes
+```
+
+Both accept `BASE_URL=https://…` so they can be pointed at a deployment.
 
 ---
 
