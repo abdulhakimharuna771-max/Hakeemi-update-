@@ -11,6 +11,17 @@ import { siteConfig } from '@/lib/site-config';
 import { initialsOf } from '@/lib/utils';
 
 /**
+ * Rendered per request, never prerendered.
+ *
+ * These routes read the signed-in session and live database rows, so caching a
+ * render at build time could freeze a shell that was produced before the
+ * environment or the database was configured. Next.js would otherwise be free to
+ * statically prerender the "not configured" redirect when the app is built
+ * without environment variables.
+ */
+export const dynamic = 'force-dynamic';
+
+/**
  * Applicant portal shell.
  *
  * requireVerifiedUser() runs on the server for every portal page, so an

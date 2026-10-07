@@ -7,6 +7,13 @@ import { buttonStyles } from '@/components/ui/button';
 import { KeyRound } from 'lucide-react';
 import { getSession } from '@/lib/auth';
 
+/**
+ * Rendered per request: the page depends on the signed-in session created by
+ * the reset link, so it must never be prerendered into a fixed "expired link"
+ * state at build time.
+ */
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Choose a new password',
   description: 'Set a new password for your applicant account.',

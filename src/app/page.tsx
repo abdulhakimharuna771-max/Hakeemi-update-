@@ -31,6 +31,17 @@ import { isSupabaseConfigured } from '@/lib/supabase/config';
 import { APPLICATION_STEPS } from '@/lib/constants';
 import { siteConfig } from '@/lib/site-config';
 
+/**
+ * Rendered per request, never prerendered.
+ *
+ * These routes read the signed-in session and live database rows, so caching a
+ * render at build time could freeze a shell that was produced before the
+ * environment or the database was configured. Next.js would otherwise be free to
+ * statically prerender the "not configured" redirect when the app is built
+ * without environment variables.
+ */
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: `${siteConfig.organisation} — ${siteConfig.programName}`,
   description: siteConfig.supportingMessage,

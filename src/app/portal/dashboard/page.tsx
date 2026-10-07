@@ -10,6 +10,7 @@ import {
   UserRound,
 } from 'lucide-react';
 
+import { DiscardDraft } from '@/components/portal/discard-draft';
 import { NotificationList } from '@/components/portal/notification-list';
 import { StatusTracker } from '@/components/portal/status-tracker';
 import { buttonStyles } from '@/components/ui/button';
@@ -27,10 +28,10 @@ export const metadata = { title: 'Dashboard' };
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ submitted?: string }>;
+  searchParams: Promise<{ submitted?: string; notice?: string }>;
 }) {
   const { user, profile } = await requireVerifiedUser();
-  const { submitted } = await searchParams;
+  const { submitted, notice } = await searchParams;
 
   const program = await getOpenProgram();
   const application = program ? await getApplicantApplication(program.id) : await getApplicantApplication();
@@ -82,6 +83,12 @@ export default async function DashboardPage({
           className="text-xs"
         />
       </div>
+
+      {notice === 'password-updated' ? (
+        <Alert variant="success" title="Your password has been updated">
+          You are signed in with your new password.
+        </Alert>
+      ) : null}
 
       {submitted === '1' && application?.submitted_at ? (
         <Alert variant="success" title="Your application has been submitted">
@@ -292,9 +299,12 @@ export default async function DashboardPage({
       ) : null}
 
       {application?.submitted_at === null && application.status === 'DRAFT' ? (
-        <p className="text-xs text-slate-500">
-          Draft started {formatDate(application.created_at)} · last saved {formatDateTime(application.updated_at)}
-        </p>
+        <div className="space-y-2">
+          <p className="text-xs text-slate-500">
+            Draft started {formatDate(application.created_at)} · last saved {formatDateTime(application.updated_at)}
+          </p>
+          <DiscardDraft applicationId={application.id} />
+        </div>
       ) : null}
 
       {!application && profile.profile_completion < 100 ? (
