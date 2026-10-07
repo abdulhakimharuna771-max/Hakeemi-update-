@@ -29,6 +29,7 @@ const MIGRATIONS = [
   'supabase/migrations/0004_logic.sql',
   'supabase/migrations/0005_rls.sql',
   'supabase/migrations/0006_storage.sql',
+  'supabase/migrations/0007_contact_messages.sql',
 ];
 
 const SEEDS = [
@@ -228,32 +229,6 @@ async function affected(db, sql, params = []) {
 // ---------------------------------------------------------------------------
 // Fixture payload
 // ---------------------------------------------------------------------------
-function completeApplicationPayload(categoryCode, detailValues) {
-  return {
-    full_name: 'Amina Yusuf Bello',
-    phone: '08031234567',
-    address: 'No. 14, Testing Layout, Ibadan',
-    community: 'Bodija',
-    project_name: 'Smart Irrigation Advisory',
-    project_description:
-      'A low-cost soil moisture device paired with SMS advisories for smallholder farmers.',
-    problem_statement:
-      'Smallholder farmers irrigate by guesswork, wasting water and losing yield during dry spells.',
-    opportunity_statement:
-      'Widespread mobile phone use makes low-cost irrigation advisory services viable at scale.',
-    current_stage: 'Working prototype',
-    target_beneficiaries: 'Smallholder vegetable farmers within Oyo State',
-    skills: ['Embedded systems', 'Agronomy', 'Field data collection'],
-    expected_impact:
-      'Reduce water use and improve dry-season yields for participating farms.',
-    terms_accepted: true,
-    accuracy_confirmed: true,
-    current_step: 7,
-    support_needs: [{ code: 'TRAINING' }, { code: 'FUNDING' }, { code: 'EQUIPMENT' }],
-    _categoryCode: categoryCode,
-    _details: detailValues,
-  };
-}
 
 // ---------------------------------------------------------------------------
 // Main
@@ -326,6 +301,7 @@ async function main() {
   // --- Structure ---------------------------------------------------------
   section('Schema structure');
   const requiredTables = [
+    'contact_messages',
     'profiles', 'applications', 'applicant_categories', 'locations',
     'application_support_needs', 'support_needs', 'application_documents',
     'application_status_history', 'notifications', 'programs', 'application_statuses',
@@ -340,6 +316,7 @@ async function main() {
   }
 
   const rlsTables = [
+    'contact_messages',
     'profiles', 'applications', 'application_support_needs', 'application_documents',
     'application_status_history', 'notifications', 'locations', 'applicant_categories',
     'support_needs', 'document_types', 'programs', 'application_statuses',
@@ -959,6 +936,46 @@ async function main() {
     'an admin sees every application, including other applicants\' drafts',
     await count(db, 'select count(*) from public.v_applications_overview'),
     3
+  );
+
+  // --- Contact form -------------------------------------------------------
+  section('Public contact form stores enquiries privately');
+  await actAs(db, 'anon');
+  const contactInserted = await affected(
+    db,
+    `insert into public.contact_messages (full_name, email, message)
+     values ('Public Enquirer', 'enquirer@example.com', 'Please share the registration deadline.')`
+  );
+  checkEqual('an anonymous visitor can send an enquiry', contactInserted, 1);
+
+  const shortMessage = await expectError(
+    db,
+    `insert into public.contact_messages (full_name, email, message) values ('A B', 'x@y.co', 'hi')`,
+    'contact_messages_message_len'
+  );
+  check('an enquiry that is too short is rejected by the database', shortMessage.ok, shortMessage.reason);
+
+  const badEmail = await expectError(
+    db,
+    `insert into public.contact_messages (full_name, email, message) values ('A B', 'not-an-email', 'A sufficiently long enquiry message.')`,
+    'contact_messages_email_like'
+  );
+  check('an enquiry with a malformed email is rejected', badEmail.ok, badEmail.reason);
+
+  checkEqual(
+    'the public cannot read enquiries back',
+    await (async () => {
+      const r = await expectError(db, 'select count(*) from public.contact_messages', 'permission denied');
+      return r.ok ? 1 : 0;
+    })(),
+    1
+  );
+
+  await actAs(db, 'authenticated', userB);
+  checkEqual(
+    'an admin can read enquiries (Phase 3 dashboard readiness)',
+    await count(db, 'select count(*) from public.contact_messages'),
+    1
   );
 
   // --- Application number distribution -----------------------------------

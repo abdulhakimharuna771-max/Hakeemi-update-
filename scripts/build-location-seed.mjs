@@ -150,12 +150,7 @@ create temp table _seed_locations (
 ) on commit drop;
 `);
 
-  const allRows = [
-    ...stateRows,
-    ...lgaRows.map((r) => `  ${r}`),
-    ...wardRows.map((r) => `  ${r}`),
-  ];
-  // Normalise indentation: stateRows above are already plain, so rebuild uniformly.
+  // One statement per batch of rows, uniform for every level.
   const normalised = [...stateRows, ...lgaRows, ...wardRows];
 
   out.push('insert into _seed_locations (level, code, name, parent_code) values');
