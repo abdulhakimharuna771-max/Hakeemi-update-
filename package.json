@@ -1,0 +1,40 @@
+{
+  "name": "gizmo-dan-kaita-registration-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GIZMO DAN KAITA OFFICE PLUS — Final Year Project & Innovation Development Program registration and applicant portal (Phase 1).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "db:seed:locations": "node scripts/build-location-seed.mjs",
+    "db:verify": "node scripts/verify-database.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.52.0",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "^7.89.0",
+    "tailwind-merge": "^3.7.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "nigeria-inec-geo": "^1.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
