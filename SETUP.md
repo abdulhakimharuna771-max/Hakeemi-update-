@@ -179,6 +179,8 @@ programme brief.
 | 11 | Row Level Security | `select * from profiles;` in the SQL editor as an applicant returns only their own row; `node scripts/verify-database.mjs` proves the policies |
 | 12 | No cross-applicant access | A crafted request for another applicant's application id returns `application_not_found`; the document signer only issues URLs for the caller's own files |
 | 13 | Mobile responsiveness | Every layout is mobile-first with no horizontal overflow; the portal uses a bottom tab bar and sticky step actions on small screens |
+| 13b | Accessibility | `npm run check:a11y` (with the dev server running) checks labels, headings, landmark structure and accessible names on every public route |
+| 13c | Production build | `npm run build` compiles every route and confirms which ones are request-time (`ƒ`) rather than prerendered |
 | 14 | Empty / error / loading states | Empty database ⇒ `EmptyState` panels; failed saves keep the entered values and offer retry; `loading.tsx` and `error.tsx` cover the portal |
 | 15 | No fake or demo data | `supabase/seed/` contains reference data only — no applicants, applications, statistics or testimonials |
 

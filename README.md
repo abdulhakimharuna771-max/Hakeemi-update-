@@ -52,6 +52,7 @@ explicit "not configured yet" notice instead of crashing or faking data.
 | `npm run lint` | ESLint (Next.js config) |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run db:verify` | applies every migration and seed to an in-process Postgres and proves the RPCs, RLS policies, ID generator and storage rules — 146 checks, no credentials needed |
+| `npm run check:a11y` | accessibility sanity check of the public routes against a running server |
 | `npm run db:seed:locations` | regenerates the Nigerian geography seed |
 
 ---

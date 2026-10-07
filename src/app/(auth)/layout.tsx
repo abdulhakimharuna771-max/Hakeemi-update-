@@ -30,9 +30,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             </span>
           </Link>
 
-          <h1 className="mt-8 font-serif text-2xl leading-snug text-white lg:mt-12 lg:text-3xl">
+          {/* Not a heading: the page's own title is the single <h1> on each
+              auth screen, so this stays a styled paragraph. */}
+          <p className="mt-8 font-serif text-2xl leading-snug text-white lg:mt-12 lg:text-3xl">
             {siteConfig.headline}
-          </h1>
+          </p>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-navy-100">
             {siteConfig.supportingMessage}
           </p>
