@@ -1,20 +1,42 @@
 # Manual verification — items 1 to 15
 
-Everything in this document is run by hand against your own Supabase project.
-The three automated checks (`npm run db:verify`, `npm run check:routes`,
-`npm run check:a11y`) already run without credentials; these are the steps that
-need a live database, a real inbox and a browser.
+Two layers of verification exist, and they cover different things.
 
-**Before you start**
+**Automated — run these first.** `npm run verify:live` drives the real data plane
+against your own Supabase project: real sign-ups, real draft saving, a real file
+in the private bucket, real submission, and the cross-applicant isolation matrix.
+It needs no browser and no clicking.
 
 ```bash
-cp .env.example .env.local     # add NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY
+npm run check:config    # .env.local is valid; prints exactly what will render
+npm run db:verify       # the schema is sound (158 checks, offline)
+npm run verify:live     # the live project (auth, PostgREST, storage, RLS)
+npm run check:routes    # every page answers correctly (server must be running)
+npm run check:a11y      # labels, headings, landmarks
+```
+
+**Manual — this document.** The same ground, plus everything a script cannot
+judge: whether the screens read well, whether the wizard feels right on a phone,
+whether an error message actually helps. Work through it once before going live,
+and keep the sign-off table at the end.
+
+---
+
+## Before you start
+
+```bash
+cp .env.example .env.local     # Supabase URL + publishable/anon key
 npm install
+npm run check:config           # expect: 10 configuration checks passed
 npm run db:verify              # expect: 158/158 checks passed
 npm run dev                    # leave this running
 npm run check:routes           # expect: 21/21 route checks passed
 npm run check:a11y             # expect: 7/7 routes passed
 ```
+
+If your project is brand new, apply the schema first — see SETUP.md, or run the
+three files in `supabase/apply-*.sql` in the SQL editor. `verify:live` detects a
+missing schema and tells you.
 
 Have two things open: the browser, and the Supabase dashboard for your project
 (**Table Editor** and **Authentication → Users**). Keep a second email address

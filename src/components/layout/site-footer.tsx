@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
+import { ContactChannels, SocialChannels } from './contact-channels';
 import { LogoMark } from './logo';
-import { siteConfig } from '@/lib/site-config';
+import { hasAnyContactChannel, hasAnySocialChannel, siteConfig } from '@/lib/site-config';
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -78,26 +79,11 @@ export function SiteFooter() {
 
           <div>
             <h2 className="text-2xs font-semibold uppercase tracking-[0.1em] text-navy-900">Contact</h2>
-            {contact.email || contact.phone || contact.addressLines.length > 0 ? (
-              <ul className="mt-4 space-y-3 text-sm text-slate-600">
-                {contact.email ? (
-                  <li className="flex items-start gap-2.5">
-                    <Mail aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-slate-400" />
-                    <a href={`mailto:${contact.email}`} className="break-all hover:text-navy-900 hover:underline">
-                      {contact.email}
-                    </a>
-                  </li>
-                ) : null}
-                {contact.phone ? (
-                  <li className="flex items-start gap-2.5">
-                    <Phone aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-slate-400" />
-                    <a href={`tel:${contact.phone.replace(/\s+/g, '')}`} className="hover:text-navy-900 hover:underline">
-                      {contact.phone}
-                    </a>
-                  </li>
-                ) : null}
+            {hasAnyContactChannel() ? (
+              <>
+                <ContactChannels className="mt-4 space-y-3 text-sm text-slate-600" />
                 {contact.addressLines.length > 0 ? (
-                  <li className="flex items-start gap-2.5">
+                  <div className="mt-3 flex items-start gap-2.5 text-sm text-slate-600">
                     <MapPin aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-slate-400" />
                     <address className="not-italic leading-relaxed">
                       {contact.addressLines.map((line) => (
@@ -106,15 +92,23 @@ export function SiteFooter() {
                         </span>
                       ))}
                     </address>
-                  </li>
+                  </div>
                 ) : null}
-              </ul>
+                {contact.officeHours ? (
+                  <p className="mt-3 text-xs text-slate-500">{contact.officeHours}</p>
+                ) : null}
+              </>
             ) : (
               <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                Official contact channels are being published. Messages sent through the contact form on
-                this page reach the programme office.
+                Messages sent through the contact form on the programme page reach the programme office.
               </p>
             )}
+            {hasAnySocialChannel() ? (
+              <>
+                <h2 className="mt-7 text-2xs font-semibold uppercase tracking-[0.1em] text-navy-900">Follow</h2>
+                <SocialChannels className="mt-3 text-sm" />
+              </>
+            ) : null}
           </div>
         </div>
 

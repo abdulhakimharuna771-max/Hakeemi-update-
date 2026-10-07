@@ -2,8 +2,9 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { MapPin, Send } from 'lucide-react';
 
+import { ContactChannels, SocialChannels } from '@/components/layout/contact-channels';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/feedback';
 import { FieldInput, FieldTextarea } from '@/components/ui/form-controls';
@@ -12,7 +13,7 @@ import {
   submitContactMessage,
   type ContactFormState,
 } from '@/lib/actions/contact';
-import { siteConfig } from '@/lib/site-config';
+import { hasAnyContactChannel, hasAnySocialChannel, siteConfig } from '@/lib/site-config';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -119,29 +120,11 @@ export function ContactForm() {
           Programme office
         </h3>
 
-        {siteConfig.contact.email ||
-        siteConfig.contact.phone ||
-        siteConfig.contact.whatsapp ||
-        siteConfig.contact.addressLines.length > 0 ? (
-          <ul className="mt-5 space-y-4 text-sm text-slate-700">
-            {siteConfig.contact.email ? (
-              <li className="flex items-start gap-3">
-                <Mail aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-slate-400" />
-                <a href={`mailto:${siteConfig.contact.email}`} className="break-all hover:underline">
-                  {siteConfig.contact.email}
-                </a>
-              </li>
-            ) : null}
-            {siteConfig.contact.phone ? (
-              <li className="flex items-start gap-3">
-                <Phone aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-slate-400" />
-                <a href={`tel:${siteConfig.contact.phone.replace(/\s+/g, '')}`} className="hover:underline">
-                  {siteConfig.contact.phone}
-                </a>
-              </li>
-            ) : null}
+        {hasAnyContactChannel() ? (
+          <div className="mt-5">
+            <ContactChannels className="space-y-4 text-sm text-slate-700" />
             {siteConfig.contact.addressLines.length > 0 ? (
-              <li className="flex items-start gap-3">
+              <div className="mt-4 flex items-start gap-3 text-sm text-slate-700">
                 <MapPin aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-slate-400" />
                 <address className="not-italic leading-relaxed">
                   {siteConfig.contact.addressLines.map((line) => (
@@ -150,12 +133,20 @@ export function ContactForm() {
                     </span>
                   ))}
                 </address>
-              </li>
+              </div>
             ) : null}
             {siteConfig.contact.officeHours ? (
-              <li className="text-slate-600">{siteConfig.contact.officeHours}</li>
+              <p className="mt-4 text-sm text-slate-600">{siteConfig.contact.officeHours}</p>
             ) : null}
-          </ul>
+            {hasAnySocialChannel() ? (
+              <>
+                <h3 className="mt-8 text-sm font-semibold uppercase tracking-[0.08em] text-navy-900">
+                  Follow the programme
+                </h3>
+                <SocialChannels className="mt-3 text-sm" />
+              </>
+            ) : null}
+          </div>
         ) : (
           <p className="mt-5 text-sm leading-relaxed text-slate-600">
             Official phone, email and office address details are being published. Until they are,

@@ -31,29 +31,25 @@ All schema, Row Level Security, functions and the private storage bucket live in
 `supabase/migrations/`. Reference data (categories, support needs, document
 types, the programme row) and Nigerian geography live in `supabase/seed/`.
 
-### Option A — Supabase SQL editor (no CLI)
+### Option A — Supabase SQL editor (no CLI, fastest)
 
-Run these files **in order**, each one in full, in the SQL editor of your project:
+Three ready-to-paste files are generated from the migrations and seeds. Open the
+SQL editor in your project, create a new query, and run each file **in order**:
 
 ```
-supabase/migrations/0001_foundation.sql
-supabase/migrations/0002_reference_tables.sql
-supabase/migrations/0003_core_tables.sql
-supabase/migrations/0004_logic.sql
-supabase/migrations/0005_rls.sql
-supabase/migrations/0006_storage.sql
-supabase/migrations/0007_contact_messages.sql
-supabase/migrations/0008_resubmission_keeps_application_number.sql
-supabase/migrations/0009_application_number_alphabet.sql
-
-supabase/seed/001_reference_data.sql
-supabase/seed/002_locations_nigeria.sql
+supabase/apply-1-schema.sql      schema, functions, Row Level Security, storage
+supabase/apply-2-reference.sql   categories, support needs, document types, the programme
+supabase/apply-3-locations.sql   Nigerian geography (37 states · 774 LGAs · 8,809 wards)
 ```
 
-Every file is safe to re-run: objects are created or replaced, and seeds upsert by
-their natural key (`code`).
+Every statement is idempotent, so re-running any of them is safe. Regenerate the
+files after changing anything under `supabase/`:
 
-### Option B — Supabase CLI
+```bash
+npm run db:bundle
+```
+
+### Option B — Supabase CLI### Option B — Supabase CLI
 
 ```bash
 supabase link --project-ref <your-project-ref>
@@ -96,8 +92,22 @@ applicant data. **A service-role key must never be added to this application.**
 There is no code path that reads one, and no server action can escalate beyond the
 signed-in applicant's own rows.
 
-Optional values (contact details, `NEXT_PUBLIC_SITE_URL`) are documented in
-`.env.example`. Any contact channel left blank is simply not rendered.
+Optional values are documented in `.env.example`, and `npm run check:config`
+prints exactly what the site will render. Two groups matter:
+
+| Variable | Effect |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | origin used in the email links Supabase Auth sends |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | shown in the contact section and footer, linked as `mailto:` |
+| `NEXT_PUBLIC_CONTACT_PHONES` | comma-separated; each is shown as a `tel:` link |
+| `NEXT_PUBLIC_CONTACT_ADDRESS` | pipe-separated lines; blank means the address block is hidden |
+| `NEXT_PUBLIC_CONTACT_HOURS` | a single line, e.g. office hours |
+| `NEXT_PUBLIC_CONTACT_WHATSAPP` | builds the `wa.me` link; defaults to the first phone number |
+| `NEXT_PUBLIC_SOCIAL_HANDLE` | shown as text — never turned into a guessed profile URL |
+| `NEXT_PUBLIC_SOCIAL_LINKS` | `Name=URL` pairs that publish real, clickable links |
+
+Any channel left blank is simply not rendered: the site never invents a phone
+number, address, email address or social account.
 
 ---
 
@@ -204,8 +214,17 @@ valid.
 
 ### Automated checks
 
-The manual, step-by-step acceptance run — including the cross-applicant
-isolation checks — is in **[VERIFICATION.md](./VERIFICATION.md)**.
+```bash
+npm run check:config    # validates .env.local, offline and instant
+npm run verify:live     # the real end-to-end run against your Supabase project
+```
+
+`npm run verify:live` exercises the live data plane with nothing but the
+publishable key and genuine sign-ups: it creates two disposable applicants, saves
+a draft step by step, uploads a real PDF into the private bucket, submits,
+allocates an application number, and then proves applicant B can reach none of
+applicant A's data. It needs the three SQL bundles applied first, and it stops
+with instructions if email confirmation has to be completed by hand.
 
 With the dev server running:
 
@@ -215,6 +234,9 @@ npm run check:a11y      # labels, headings, landmarks on the public routes
 ```
 
 Both accept `BASE_URL=https://…` so they can be pointed at a deployment.
+
+The manual, step-by-step acceptance run — for when you want to see each screen
+yourself — is in **[VERIFICATION.md](./VERIFICATION.md)**.
 
 ---
 
