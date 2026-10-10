@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAKEE MI RUSH — Street Legends</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg-fx" aria-hidden="true">
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="profile-chip">
+      <div class="avatar" id="avatarBox">
+        <span class="avatar-initial">H</span>
+      </div>
+      <div class="profile-meta">
+        <div class="p-name">HAKEE MI</div>
+        <div class="p-level"><span class="lv-badge">Lv.12</span><span class="xp-bar"><i style="width:64%"></i></span></div>
+      </div>
+    </div>
+
+    <nav class="menu" id="mainMenu">
+      <button class="menu-item active" data-page="home">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M8 5.5v13l11-6.5z"/></svg><span>PLAY</span>
+      </button>
+      <div class="menu-divider"></div>
+      <button class="menu-item" data-page="garage">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M3 13l2-6a2 2 0 012-1.5h10A2 2 0 0119 7l2 6"/><path d="M3 13h18v5H3z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><span>GARAGE</span>
+      </button>
+      <button class="menu-item" data-page="cars">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M4 12l1.6-4.2A2 2 0 017.5 6.5h9a2 2 0 011.9 1.3L20 12"/><rect x="3" y="12" width="18" height="5" rx="1.5"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg><span>CARS</span>
+      </button>
+      <button class="menu-item" data-page="characters">
+        <svg viewBox="0 0 24 24" class="ic"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.4c2.6.2 4.3 1.9 4.9 4.6"/></svg><span>CHARACTERS</span>
+      </button>
+      <button class="menu-item" data-page="missions">
+        <svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="1"/></svg><span>MISSIONS</span>
+      </button>
+      <button class="menu-item" data-page="worldmap">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M9 4L3.6 6v14L9 18l6 2 5.4-2V4L15 6z"/><path d="M9 4v14M15 6v14"/></svg><span>WORLD MAP</span>
+      </button>
+      <button class="menu-item" data-page="shop">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M5.5 8h13l-1.2 11.2a1.5 1.5 0 01-1.5 1.3H8.2a1.5 1.5 0 01-1.5-1.3z"/><path d="M9 8V6.5a3 3 0 016 0V8"/></svg><span>SHOP</span>
+      </button>
+      <button class="menu-item" data-page="profile">
+        <svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20c.7-4 3.6-6.2 7.2-6.2s6.5 2.2 7.2 6.2"/></svg><span>PROFILE</span>
+      </button>
+      <button class="menu-item" data-page="settings">
+        <svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg><span>SETTINGS</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="online-dot"></div>
+      <div>
+        <div class="sf-title">ONLINE</div>
+        <div class="sf-sub">12,480 players</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <div class="event-chip">
+        <span class="ev-tag">LIVE EVENT</span>
+        <span class="ev-name">WEEKEND RALLY · 2× REWARDS</span>
+      </div>
+      <div class="topbar-right">
+        <div class="pill coins">
+          <svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M9.6 10h3.6a1.9 1.9 0 010 3.8H9.6l3.9 3.7"/></svg>
+          <span id="coinValue">248,750</span>
+        </div>
+        <div class="pill gems">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M7 4h10l4 6-9 10L3 10z"/><path d="M3 10h18M12 4l-3.5 6L12 20l3.5-10z"/></svg>
+          <span id="gemValue">2,450</span>
+          <span class="pill-plus">+3</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======== HOME DASHBOARD ======== -->
+    <section class="page active" id="page-home">
+      <div class="home-grid">
+
+        <!-- HERO -->
+        <div class="hero">
+          <div class="hero-rays" aria-hidden="true"></div>
+          <div class="crown" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 8l4.5 3L12 5l4.5 6L21 8l-1.6 10H4.6z"/><path d="M4.6 18h14.8" opacity=".55"/></svg>
+          </div>
+          <h1 class="logo"><span class="logo-a">HAKEE MI</span><span class="logo-b">RUSH</span></h1>
+          <div class="logo-sub">STREET&nbsp;LEGENDS</div>
+          <div class="hero-car-wrap">
+            <div class="hero-car-glow" aria-hidden="true"></div>
+            <img class="hero-car" src="assets/hero-car.png" alt="Hakeemi Rush hero car">
+          </div>
+          <div class="hero-tags">
+            <span>RACE</span><i>•</i><span>HEIST</span><i>•</i><span>CHASE</span><i>•</i><span>EXPLORE</span>
+          </div>
+        </div>
+
+        <!-- RIGHT RAIL -->
+        <div class="rail">
+          <div class="panel race-stats">
+            <div class="rs-row">
+              <div class="rs-block">
+                <span class="rs-label">POS</span>
+                <span class="rs-value">3<em>/6</em></span>
+              </div>
+              <span class="rs-sep"></span>
+              <div class="rs-block">
+                <span class="rs-label">LAP</span>
+                <span class="rs-value">1<em>/2</em></span>
+              </div>
+              <span class="rs-sep"></span>
+              <div class="rs-block">
+                <span class="rs-label">BEST LAP</span>
+                <span class="rs-value small">01:12.4</span>
+              </div>
+            </div>
+            <div class="rs-timer" id="raceTimer">00:48.32</div>
+          </div>
+
+          <div class="panel wanted">
+            <div class="panel-head">
+              <svg viewBox="0 0 24 24" class="ic warn"><path d="M12 4L2.8 20h18.4z"/><path d="M12 10v4.2M12 17.2v.1"/></svg>
+              <span>WANTED LEVEL</span>
+            </div>
+            <div class="stars" id="wantedStars">
+              <svg viewBox="0 0 24 24" class="star on"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.5 9.8l5.9-.9z"/></svg>
+              <svg viewBox="0 0 24 24" class="star on"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.5 9.8l5.9-.9z"/></svg>
+              <svg viewBox="0 0 24 24" class="star on flicker"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.5 9.8l5.9-.9z"/></svg>
+              <svg viewBox="0 0 24 24" class="star"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.5 9.8l5.9-.9z"/></svg>
+              <svg viewBox="0 0 24 24" class="star"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.5 9.8l5.9-.9z"/></svg>
+            </div>
+            <div class="w-sub">POLICE UNITS</div>
+            <div class="w-row">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M4 9h9a4 4 0 014 4v3H4z"/><path d="M17 12l3-2v6l-3-2"/><path d="M8 9V6h4v3"/><path d="M4 16v2M17 16v2"/></svg>
+              <span>HELICOPTER</span><b>1</b>
+            </div>
+            <div class="w-row">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M4 8h16v8H4z"/><path d="M4 8l2-3h12l2 3M8 12h8"/></svg>
+              <span>ROADBLOCKS</span><b>2</b>
+            </div>
+          </div>
+
+          <div class="panel characters">
+            <div class="panel-head">
+              <svg viewBox="0 0 24 24" class="ic"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.4c2.6.2 4.3 1.9 4.9 4.6"/></svg>
+              <span>CHARACTERS</span>
+            </div>
+            <div class="tabs" id="charTabs">
+              <button class="tab active" data-rarity="all">All</button>
+              <button class="tab" data-rarity="common">Common</button>
+              <button class="tab" data-rarity="rare">Rare</button>
+              <button class="tab" data-rarity="epic">Epic</button>
+              <button class="tab" data-rarity="legendary">Legendary</button>
+            </div>
+            <div class="char-grid" id="charGrid"></div>
+          </div>
+        </div>
+
+        <!-- MID ROW -->
+        <div class="mid-row">
+          <div class="panel heist">
+            <div class="card-img heist-img">
+              <img src="assets/heist-scene.png" alt="Money heist">
+              <span class="alert-badge">
+                <svg viewBox="0 0 24 24" class="ic"><path d="M12 4L2.8 20h18.4z"/><path d="M12 10v4.2M12 17.2v.1"/></svg>
+                POLICE ALERTED
+              </span>
+            </div>
+            <div class="panel-head">
+              <svg viewBox="0 0 24 24" class="ic gold"><path d="M6 9a6 6 0 0112 0v1H6z"/><path d="M6 10h12v9a2 2 0 01-2 2H8a2 2 0 01-2-2z"/><path d="M10 14h4"/></svg>
+              <span>MONEY HEIST</span>
+              <span class="head-right">CONTRACT #07</span>
+            </div>
+            <ul class="objectives">
+              <li class="done"><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span> Get to the vault</li>
+              <li><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span> Collect the money <em>0/3</em></li>
+              <li><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span> Escape</li>
+            </ul>
+            <div class="heist-foot">
+              <span class="reward"><i class="bag"></i>$750,000</span>
+              <button class="mini-btn" data-toast="Contract accepted — head to the vault!">ACCEPT</button>
+            </div>
+          </div>
+
+          <div class="panel gameplay">
+            <div class="card-img gp-img">
+              <img src="assets/gameplay-1.png" alt="Race gameplay" data-art="gameplay|">
+              <div class="hud-top">
+                <span class="hud-chip"><i class="dot nitro"></i>NITRO 78%</span>
+                <span class="hud-chip"><i class="dot pos"></i>P2/6</span>
+              </div>
+              <div class="minimap" data-variant="1"></div>
+              <div class="speedo" data-speed="213" data-max="280"></div>
+            </div>
+            <div class="gp-foot">
+              <span class="gp-mode">SUNSET LOOP</span>
+              <span class="gp-dot"></span>
+              <span class="gp-sub">SPRINT RACE</span>
+            </div>
+          </div>
+
+          <div class="panel gameplay">
+            <div class="card-img gp-img">
+              <img src="assets/gameplay-2.png" alt="Police chase gameplay" data-art="gameplay|">
+              <div class="hud-top">
+                <span class="hud-chip danger"><i class="dot wanted"></i>WANTED 3</span>
+                <span class="hud-chip"><i class="dot pos"></i>ESCAPE</span>
+              </div>
+              <div class="minimap" data-variant="2"></div>
+              <div class="speedo" data-speed="186" data-max="280"></div>
+            </div>
+            <div class="gp-foot">
+              <span class="gp-mode">DOWNTOWN CHASE</span>
+              <span class="gp-dot"></span>
+              <span class="gp-sub">POLICE CHASE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM ROW -->
+        <div class="bottom-row">
+          <div class="panel garage">
+            <div class="panel-head">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M3 13l2-6a2 2 0 012-1.5h10A2 2 0 0119 7l2 6"/><path d="M3 13h18v5H3z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
+              <span>GARAGE</span>
+              <span class="head-right cur-mini">
+                <b><i class="coin-dot"></i>248,750</b>
+                <b><i class="gem-dot"></i>2,450</b>
+              </span>
+            </div>
+            <div class="car-stage">
+              <button class="car-arrow" data-toast="Vortex X1 — no other car in this slot yet.">‹</button>
+              <div class="car-img-wrap">
+                <img src="assets/garage-car.png" alt="Vortex X1">
+                <div class="car-shine" aria-hidden="true"></div>
+              </div>
+              <button class="car-arrow" data-toast="Vortex X1 — no other car in this slot yet.">›</button>
+            </div>
+            <div class="car-title">
+              <span class="car-name">VORTEX X1</span>
+              <span class="car-stars">★★★</span>
+            </div>
+            <div class="stats" id="carStats"></div>
+            <div class="garage-foot">
+              <div class="g-tabs" id="garageTabs">
+                <button class="g-tab active" data-gtab="cars">CARS</button>
+                <button class="g-tab" data-gtab="upgrade">UPGRADE</button>
+                <button class="g-tab" data-gtab="customize">CUSTOMIZE</button>
+                <button class="g-tab" data-gtab="paint">PAINT</button>
+                <button class="g-tab" data-gtab="wheels">WHEELS</button>
+                <button class="g-tab" data-gtab="nitro">NITRO</button>
+              </div>
+              <button class="drive-btn" id="driveBtn">
+                <svg viewBox="0 0 24 24" class="ic"><path d="M8 5.5v13l11-6.5z"/></svg>
+                DRIVE
+              </button>
+            </div>
+            <div class="district">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+              Downtown District <span>100% explored</span>
+            </div>
+          </div>
+
+          <div class="panel worldmap">
+            <div class="panel-head">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M9 4L3.6 6v14L9 18l6 2 5.4-2V4L15 6z"/><path d="M9 4v14M15 6v14"/></svg>
+              <span>WORLD MAP</span>
+              <span class="head-right">DOWNTOWN</span>
+            </div>
+            <div class="map-body">
+              <svg class="city-map" viewBox="0 0 300 200" id="cityMap" aria-label="World map"></svg>
+              <div class="map-legend" id="mapLegend"></div>
+            </div>
+          </div>
+
+          <div class="panel gamemodes">
+            <div class="panel-head">
+              <svg viewBox="0 0 24 24" class="ic"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M7.5 12h3M8.9 10.5v3M15.5 11h.01M17.8 13h.01"/></svg>
+              <span>GAME MODES</span>
+            </div>
+            <div class="modes-grid" id="modesGrid"></div>
+          </div>
+        </div>
+
+        <!-- BANNERS -->
+        <div class="banner-row">
+          <div class="banner" data-page="worldmap">
+            <img src="assets/banner-world.png" data-art="banner|" alt="Open world">
+            <div class="banner-txt"><h4>EXPLORE A MASSIVE OPEN WORLD</h4><span class="b-arrow">→</span></div>
+          </div>
+          <div class="banner" data-page="garage">
+            <img src="assets/banner-customize.png" data-art="banner|" alt="Customize">
+            <div class="banner-txt"><h4>CUSTOMIZE YOUR RIDE</h4><span class="b-arrow">→</span></div>
+          </div>
+          <div class="banner" data-toast="Police Chase selected — lose the cops!">
+            <img src="assets/banner-police.png" data-art="banner|" alt="Police">
+            <div class="banner-txt"><h4>OUTRUN THE POLICE</h4><span class="b-arrow">→</span></div>
+          </div>
+          <div class="banner" data-toast="Stunt mode selected — send it!">
+            <img src="assets/banner-stunt.png" data-art="banner|" alt="Stunt">
+            <div class="banner-txt"><h4>FEEL THE REAL RACING EXPERIENCE</h4><span class="b-arrow">→</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======== GENERIC PAGE (rendered by JS) ======== -->
+    <section class="page" id="page-generic"></section>
+  </div>
+</div>
+
+<!-- toasts -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- race loading overlay -->
+<div class="race-overlay" id="raceOverlay">
+  <div class="ro-card">
+    <div class="ro-crown">
+      <svg viewBox="0 0 24 24"><path d="M3 8l4.5 3L12 5l4.5 6L21 8l-1.6 10H4.6z"/></svg>
+    </div>
+    <div class="ro-title">ENTERING RACE</div>
+    <div class="ro-mode" id="roMode">SUNSET LOOP · STUNT</div>
+    <div class="ro-bar"><i id="roBar"></i></div>
+    <div class="ro-count" id="roCount">3</div>
+    <div class="ro-hint">PRESS <b>ESC</b> TO CANCEL</div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

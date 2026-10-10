@@ -1,0 +1,19 @@
+{
+  "name": "hakeemi-rush-ui",
+  "version": "1.0.0",
+  "description": "Hakeemi Rush — Street Legends: interactive recreation of the game front-end UI",
+  "scripts": {
+    "start": "python3 -m http.server 8080 --bind 0.0.0.0",
+    "test": "node smoke-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdulhakimharuna771-max/Hakeemi-update-.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@fontsource/montserrat": "^5.3.0",
+    "@fontsource/orbitron": "^5.3.0",
+    "jsdom": "^26.0.0"
+  }
+}
